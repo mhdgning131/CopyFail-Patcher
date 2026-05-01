@@ -38,7 +38,6 @@ info "Removing mitigation for ${CVE}..."
 separator
 echo ""
 
-# Step 1: Remove modprobe block file
 if [[ -f "$CONF_FILE" ]]; then
   rm -f "$CONF_FILE"
   ok "Removed block file: ${CONF_FILE}"
@@ -46,7 +45,6 @@ else
   warn "Block file not found ! It's already removed or never applied."
 fi
 
-# Step 2: Reload the module to confirm it loads again
 info "Attempting to load '${MODULE}' module..."
 if modprobe "$MODULE" 2>/dev/null; then
   ok "Module '${MODULE}' loaded successfully. ← Patch is confirmed removed."
@@ -54,7 +52,6 @@ else
   warn "Module could not be loaded :)."
 fi
 
-# Step 3: Update initramfs
 info "Rebuilding initramfs to remove the block..."
 if command -v update-initramfs &>/dev/null; then
   update-initramfs -u &>>"$LOG_FILE" && ok "initramfs updated (Debian/Ubuntu)."
